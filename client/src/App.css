@@ -1,0 +1,25 @@
+.board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+    width: 100%;
+}
+
+.board {
+    height: 100lvh;
+    width: 100vh;
+}
+
+@media (max-width: 750px) {
+    .board {
+        height: 100vw;
+        width: 100vw;
+    }
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
