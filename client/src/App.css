@@ -55,6 +55,7 @@
 
 .btn-contained {
     background-color: #3959ab;
+    border: 2px solid #3959ab;
     color: white;    
     padding: 10px 25px;
 
