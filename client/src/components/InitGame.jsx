@@ -9,6 +9,19 @@ function InitGame({ setRoom, setOrientation, setPlayers}) {
   const [roomInput, setRoomInput] = useState("");
   const [roomError, setRoomError] = useState("");
 
+  const handleJoinRoom = () => {
+    // join a room 
+    if(!roomInput) return;
+    socket.emit("joinRoom", { roomId: roomInput }, (r) => {
+      if(r.error) return roomError(r.message);
+      console.log("response: ", r);
+      setRoom(r?.roomId);
+      setPlayers(r?.players);
+      setOrientation("black");
+    });
+    setRoomDialogOpen(false);
+  }
+
 
   return (
     <Stack 
@@ -20,19 +33,7 @@ function InitGame({ setRoom, setOrientation, setPlayers}) {
         open={roomDialogOpen}
         title="Select Room to Join" 
         contentText="Enter a valid room ID to join the game"
-        handleContinue={() => {
-          // join a room 
-          if(!roomInput) return;
-          socket.emit("joinRoom", { roomId: roomInput }, (r) => {
-            if(r.error) return roomError(r.message);
-            console.log("response: ", r);
-            setRoom(r?.roomId);
-            setPlayers(r?.players);
-            setOrientation("black");
-
-          });
-          setRoomDialogOpen(false);
-        }}
+        handleContinue={handleJoinRoom}
       >
 
         <TextField 
@@ -43,9 +44,13 @@ function InitGame({ setRoom, setOrientation, setPlayers}) {
           name='room'
           value={roomInput}
           onChange={(e) => setRoomInput(e.target.value)}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter') handleJoinRoom();
+          }}
           variant='standard'
           error={Boolean(roomError)}
           helperText={roomError ? "Enter a room ID" : "Invalid room ID"}
+
         />
       </CustomDialog>
 

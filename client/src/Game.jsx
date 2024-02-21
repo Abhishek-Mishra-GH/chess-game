@@ -5,12 +5,13 @@ import { Chess } from "chess.js";
 import CustomDialog from "./components/CustomDialog";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
-import { Stack } from "@mui/material";
 import copy from "copy-to-clipboard";
+import socket from "./socket";
 
 function Game({ players, room, orientation, cleanup }) {
   const [over, setOver] = useState("");
   const [copiedRoomId, setCopiedRoomId] = useState(false);
+
   let chess = useMemo(() => new Chess(), [over]);
   const [fen, setFen] = useState(chess.fen());
 
@@ -41,6 +42,14 @@ function Game({ players, room, orientation, cleanup }) {
   );
 
   function onDrop(initialSquare, finalSquare) {
+
+    if(chess.turn() !== orientation[0]) return false;
+
+    if(players.length < 2) {
+      alert("Wait for opponent to join the game!");
+      return false;
+    }
+
     const moveData = {
       from: initialSquare,
       to: finalSquare,
@@ -53,13 +62,31 @@ function Game({ players, room, orientation, cleanup }) {
     // illegal move
     if (move === null) return false;
 
+    socket.emit("move", {
+      move: moveData,
+      room,
+    });
+
     return true;
   }
+
+  useEffect(() => {
+
+    socket.on("move1", (move) => {
+      console.log(move);
+      makeAMove(move);
+    });
+
+  }, [makeAMove]);
 
   return (
     <>
       <main className="main-container">
-        <div className="t1"></div>
+        <div className="t1">
+          <h2>Players: </h2>
+          <h3> {players[0]?.username} </h3>
+          <h3> {players[1]?.username} </h3>
+        </div>
         <div className="board">
           <DndProvider
             backend={TouchBackend}
@@ -67,6 +94,7 @@ function Game({ players, room, orientation, cleanup }) {
           >
             <Chessboard
               position={fen}
+              boardOrientation={orientation}
               onPieceDrop={onDrop}
             />
           </DndProvider>

@@ -23,10 +23,11 @@ function App() {
   useEffect(() => {
 
     socket.on('opponentJoined', (roomData) => {
+      console.log("roomData", roomData)
       setPlayers(roomData.players);
     });
 
-  });
+  }, []);
 
   const handleDialogContinue = () => {
     if(!username) return;

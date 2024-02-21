@@ -12,7 +12,8 @@ const port = process.env.PORT || 3000
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://chess-game-mu.vercel.app",
+    // origin: "https://chess-game-mu.vercel.app",
+    origin: "*"
   }
 });
 
@@ -68,13 +69,21 @@ io.on('connection', (socket) => {
       players: [...room.players, { id: socket.id, username: socket.data?.username }],
     };
 
-    rooms.set(room, updatedRoom);
+    rooms.set(args.roomId, updatedRoom);
 
+    
     callback(updatedRoom);
+    
+    socket.to(args.roomId).emit('opponentJoined', updatedRoom);
 
-    socket.to(room).emit('opponentJoined', updatedRoom);
+    console.log("Joined room: ", socket.data.username);
 
   });
+
+  socket.on("move", (data) => {
+    console.log(data.move, data.room);
+    socket.to(data.room).emit('move1', data.move);
+  })
 
 });
 
