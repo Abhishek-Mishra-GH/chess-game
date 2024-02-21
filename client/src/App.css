@@ -2,7 +2,6 @@
 .main-container {
     height: 100dvh;
     width: 100%;
-    border: 2px solid blue;
     flex-direction: column;
     display: flex;
     align-items: center;
