@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://chess-game-mu.vercel.app/",
+    origin: "https://chess-game-mu.vercel.app",
   }
 });
 
