@@ -14,7 +14,6 @@
 }
 
 .t1, .t2 {
-    border: 2px solid red;
     flex: 1;
     width: 100%;
     padding: 10px;
@@ -63,7 +62,6 @@
 
 .btn-outlined {
     color: #3959ab;
-    border: 2px solid #3959ab;
     background-color: white;
     padding: 10px 23px;
     margin: 5px;
