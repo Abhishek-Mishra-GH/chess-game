@@ -23,6 +23,7 @@ function App() {
   useEffect(() => {
 
     socket.on('opponentJoined', (roomData) => {
+      alert(`${roomData.players[1].username} joined the game`);
       console.log("roomData", roomData)
       setPlayers(roomData.players);
     });

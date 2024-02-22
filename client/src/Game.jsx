@@ -42,10 +42,9 @@ function Game({ players, room, orientation, cleanup }) {
   );
 
   function onDrop(initialSquare, finalSquare) {
+    if (chess.turn() !== orientation[0]) return false;
 
-    if(chess.turn() !== orientation[0]) return false;
-
-    if(players.length < 2) {
+    if (players.length < 2) {
       alert("Wait for opponent to join the game!");
       return false;
     }
@@ -71,21 +70,22 @@ function Game({ players, room, orientation, cleanup }) {
   }
 
   useEffect(() => {
-
-    socket.on("move1", (move) => {
+    socket.on("move", (move) => {
       console.log(move);
       makeAMove(move);
     });
-
-  }, [makeAMove]);
+  }, [makeAMove, socket]);
 
   return (
     <>
       <main className="main-container">
-        <div className="t1">
-          <h2>Players: </h2>
-          <h3> {players[0]?.username} </h3>
-          <h3> {players[1]?.username} </h3>
+        <div className="t1 flex" style={{
+          gap: "6px",
+        }}>
+          <h2 style={{color: "darkblue"}}>Players: {" "} </h2>
+          <h4 style={{color: "darkgreen"}}> {players[0]?.username} </h4>
+          <span style={{color: "darkred"}}>vs. {" "}</span>
+          <h4 style={{color: "darkorange"}}> {players[1]?.username} </h4>
         </div>
         <div className="board">
           <DndProvider
@@ -123,18 +123,22 @@ function Game({ players, room, orientation, cleanup }) {
             }}
             className="btn btn-outlined"
             onClick={() => {
-                copy(room);
-                setCopiedRoomId(true);
+              copy(room);
+              setCopiedRoomId(true);
             }}
           >
             Copy Room ID
           </button>
-          {
-            copiedRoomId && <span style={{
+          {copiedRoomId && (
+            <span
+              style={{
                 color: "darkblue",
-                fontSize: "11px"
-              }}>copied!</span>
-          }
+                fontSize: "11px",
+              }}
+            >
+              copied!
+            </span>
+          )}
         </div>
       </main>
     </>

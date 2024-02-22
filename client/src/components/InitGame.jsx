@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Stack, TextField } from '@mui/material';
-import Button  from '@mui/material/Button';
 import CustomDialog from './CustomDialog';
 import socket from '../socket';
 
@@ -13,8 +12,10 @@ function InitGame({ setRoom, setOrientation, setPlayers}) {
     // join a room 
     if(!roomInput) return;
     socket.emit("joinRoom", { roomId: roomInput }, (r) => {
-      if(r.error) return roomError(r.message);
-      console.log("response: ", r);
+      if(r.error) {
+        setRoomError(r.error);
+        return;
+      } 
       setRoom(r?.roomId);
       setPlayers(r?.players);
       setOrientation("black");

@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
       return;
     }
 
-    await socket.join(room);
+    await socket.join(args.roomId);
     
     const updatedRoom = {
       ...room,
@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
 
   socket.on("move", (data) => {
     console.log(data.move, data.room);
-    socket.to(data.room).emit('move1', data.move);
+    socket.to(data.room).emit('move', data.move);
   })
 
 });
