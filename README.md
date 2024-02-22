@@ -10,16 +10,26 @@ First, clone the repository to your local machine:
 git clone https://github.com/Abhishek-Mishra-GH/chess-game.git
 ```
 
-Then install the dependencies:
-
+Then install the dependencies for client and server:
 ```bash
 cd chess-game
+cd client
+npm install
+cd ..
+cd server
 npm install
 ```
 
 ## Usage
+Start the server 
+```bash
+cd server
+node server.js
+```
+
 To start the game, run: 
 ```bash
+cd client
 npm run dev
 ```
 
