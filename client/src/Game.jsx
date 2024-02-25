@@ -11,9 +11,9 @@ import socket from "./socket";
 function Game({ players, room, orientation, cleanup }) {
   const [over, setOver] = useState("");
   const [copiedRoomId, setCopiedRoomId] = useState(false);
-
   let chess = useMemo(() => new Chess(), [over]);
   const [fen, setFen] = useState(chess.fen());
+  const [selectedSquare, setSelectedSquare] = useState(null);
 
   const makeAMove = useCallback(
     (move) => {
@@ -76,16 +76,34 @@ function Game({ players, room, orientation, cleanup }) {
     });
   }, [makeAMove, socket]);
 
+  const handleSquareSelection = (square) => {
+
+    if (selectedSquare) {
+      onDrop(selectedSquare, square);
+      const prevSelectedElement = document.querySelector(`[data-square=${selectedSquare}]`)
+      prevSelectedElement.style.boxShadow = "";
+      setSelectedSquare(null);
+      return;
+    }
+
+    setSelectedSquare(square)
+    const selectedElement = document.querySelector(`[data-square=${square}]`);
+    selectedElement.style.boxShadow = "inset 2px 2px 5px black, inset -2px -2px 5px black";
+  };
+
   return (
     <>
       <main className="main-container">
-        <div className="t1 flex" style={{
-          gap: "6px",
-        }}>
-          <h2 style={{color: "darkblue"}}>Players: {" "} </h2>
-          <h4 style={{color: "darkgreen"}}> {players[0]?.username} </h4>
-          <span style={{color: "darkred"}}>vs. {" "}</span>
-          <h4 style={{color: "darkorange"}}> {players[1]?.username} </h4>
+        <div
+          className="t1 flex"
+          style={{
+            gap: "6px",
+          }}
+        >
+          <h2 style={{ color: "darkblue" }}>Players: </h2>
+          <h4 style={{ color: "darkgreen" }}> {players[0]?.username} </h4>
+          <span style={{ color: "darkred" }}>vs. </span>
+          <h4 style={{ color: "darkorange" }}> {players[1]?.username} </h4>
         </div>
         <div className="board">
           <DndProvider
@@ -96,6 +114,7 @@ function Game({ players, room, orientation, cleanup }) {
               position={fen}
               boardOrientation={orientation}
               onPieceDrop={onDrop}
+              onSquareClick={handleSquareSelection}
             />
           </DndProvider>
           <CustomDialog
