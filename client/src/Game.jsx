@@ -14,6 +14,7 @@ function Game({ players, room, orientation, cleanup }) {
   let chess = useMemo(() => new Chess(), [over]);
   const [fen, setFen] = useState(chess.fen());
   const [selectedSquare, setSelectedSquare] = useState(null);
+  const [legalMoves, setLegalMoves] = useState([]);
 
   const makeAMove = useCallback(
     (move) => {
@@ -80,15 +81,38 @@ function Game({ players, room, orientation, cleanup }) {
 
     if (selectedSquare) {
       onDrop(selectedSquare, square);
-      const prevSelectedElement = document.querySelector(`[data-square=${selectedSquare}]`)
+
+      // remove selected square box shadow
+      const prevSelectedElement = document.querySelector(`[data-square=${selectedSquare}]`);
       prevSelectedElement.style.boxShadow = "";
+
       setSelectedSquare(null);
+
+      // remove legal moves box shadow
+      for(let i = 0; i < legalMoves.length; i++) {
+        const element = document.querySelector(`[data-square=${legalMoves[i].to}]`);
+        element.style.boxShadow = "";
+      }
+
+      setLegalMoves([]);
+
       return;
     }
 
-    setSelectedSquare(square)
+    setSelectedSquare(square);
     const selectedElement = document.querySelector(`[data-square=${square}]`);
     selectedElement.style.boxShadow = "inset 2px 2px 5px black, inset -2px -2px 5px black";
+
+    const moves = chess.moves({ square, verbose: true});
+    console.log(moves);
+    for(let i = 0; i < moves.length; i++) {
+      const element = document.querySelector(`[data-square=${moves[i].to}]`);
+      
+      element.style.boxShadow = "inset 3px 3px green, inset -3px -3px green";
+
+    }
+
+    setLegalMoves(moves);
   };
 
   return (
