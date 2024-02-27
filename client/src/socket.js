@@ -4,6 +4,6 @@ const localhost = "http://localhost:3000";
 const testBackend = "https://chess-game-bt8o.onrender.com/";
 const droplet = "167.71.224.142";
 
-const socket = io.connect(droplet, {secure: true});
+const socket = io.connect(testBackend);
 
 export default socket;
